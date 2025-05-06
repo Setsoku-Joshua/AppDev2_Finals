@@ -12,6 +12,13 @@
             padding: 0;
             box-sizing: border-box;
         }
+
+        .card-img-top {
+    height: 300px;
+    object-fit: cover;
+    width: 100%;
+}
+
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #e3f2fd;
@@ -34,12 +41,16 @@
             text-align: center;
         }
         .hero-section h1 {
-            font-size: 3rem;
-            font-weight: 700;
-        }
-        .hero-section p {
-            font-size: 1.5rem;
-        }
+    font-size: 3rem;
+    font-weight: 700;
+    color:#0d47a1; 
+}
+
+.hero-section p {
+    font-size: 1.5rem;
+    color:#0d47a1; 
+}
+
         #about {
             padding: 50px 0;
             text-align: center;
@@ -73,14 +84,20 @@
             padding: 15px 0;
             text-align: center;
         }
+
+        .logo {
+    height: 60px;
+    margin-right: 15px;
+}
+
     </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg">
         <div class="container">
             <a href="#" class="navbar-brand">
-                <img src="images/logo.png" alt="Library Logo" class="logo" style="height: 40px; margin-right: 10px;">
-                UST Public Library
+            <img src="images/logo.png" alt="Library Logo" class="logo" style="height: 60px; margin-right: 15px;">
+            UST Public Library
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -111,22 +128,39 @@
         <div class="container">
             <h2>Featured Books</h2>
             <div class="row">
-                <!-- 9 Library Book Items -->
-                <!-- Replace the image file names as product1.png, product2.png, ..., product9.png -->
-                <!-- Sample Card -->
+               
                 <?php
-                for ($i = 1; $i <= 9; $i++) {
-                    echo '<div class="col-md-4 mb-4">
-                        <div class="card">
-                            <img src="images/product'.$i.'.png" class="card-img-top" alt="Book Cover '.$i.'">
-                            <div class="card-body">
-                                <h5 class="card-title">Book Title '.$i.'</h5>
-                                <p class="card-text">A captivating description of Book '.$i.'.</p>
-                                <a href="#" class="btn btn-primary">Borrow Now</a>
-                            </div>
-                        </div>
-                    </div>';
-                }
+  $books = [
+      [
+          "title" => "Book Title 1",
+          "description" => "A captivating journey through the world of fantasy and magic.",
+          "image" => "images/product1.png"
+      ],
+      [
+          "title" => "Book Title 2",
+          "description" => "An in-depth guide to mastering the art of storytelling.",
+          "image" => "images/product2.png"
+      ],
+      [
+          "title" => "Book Title 3",
+          "description" => "Explore the wonders of science and discovery in this engaging book.",
+          "image" => "images/product3.png"
+      ],
+  ];
+  
+  foreach ($books as $book) {
+      echo '<div class="col-md-4 mb-4">
+          <div class="card">
+              <img src="' . $book['image'] . '" class="card-img-top" alt="' . $book['title'] . '">
+              <div class="card-body">
+                  <h5 class="card-title">' . $book['title'] . '</h5>
+                  <p class="card-text">' . $book['description'] . '</p>
+                  <a href="#" class="btn btn-primary">Borrow Now</a>
+              </div>
+          </div>
+      </div>';
+  }
+  
                 ?>
             </div>
         </div>
