@@ -151,16 +151,18 @@
     
     foreach ($books as $book) {
         echo '<div class="col-md-4 mb-4">
-            <div class="card">
-                <img src="' . $book['image'] . '" class="card-img-top" alt="' . $book['title'] . '">
-                <div class="card-body">
-                    <h5 class="card-title">' . $book['title'] . '</h5>
-                    <p class="card-text">' . $book['description'] . '</p>
-                    <a href="#" class="btn btn-primary">Borrow Now</a>
-                </div>
-            </div>
-        </div>';
+    <div class="card">
+        <img src="' . $book['image'] . '" class="card-img-top" alt="' . $book['title'] . '">
+        <div class="card-body">
+            <h5 class="card-title">' . $book['title'] . '</h5>
+            <p class="card-text">' . $book['description'] . '</p>
+            <a href="book.php?title=' . urlencode($book['title']) . '&description=' . urlencode($book['description']) . '&image=' . urlencode($book['image']) . '" class="btn btn-primary">Borrow Now</a>
+        </div>
+    </div>
+</div>';
+      
     }
+    
     
                     ?>
                 </div>
