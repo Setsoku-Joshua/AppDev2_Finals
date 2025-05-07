@@ -133,17 +133,17 @@
 
     $books = [
         [
-            "title" => "Book Title 1",
+            "title" => "How to Kill A Mocking Bird",
             "description" => "A captivating journey through the world of fantasy and magic.",
             "image" => "images/product1.png"
         ],
         [
-            "title" => "Book Title 2",
+            "title" => "Elementary Differential Equations, 9th Edition",
             "description" => "An in-depth guide to mastering the art of storytelling.",
             "image" => "images/product2.png"
         ],
         [
-            "title" => "Book Title 3",
+            "title" => "Introduction to Observational Astrophysics",
             "description" => "Explore the wonders of science and discovery in this engaging book.",
             "image" => "images/product3.png"
         ],
