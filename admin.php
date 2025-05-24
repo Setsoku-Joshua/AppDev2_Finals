@@ -8,11 +8,25 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['role'] !== 'admin' && $_SESSION[
     exit();
 }
 
+// Create borrowing_records table if it doesn't exist
+$create_table_query = "CREATE TABLE IF NOT EXISTS borrowing_records (
+    record_id INT PRIMARY KEY AUTO_INCREMENT,
+    book_id INT,
+    user_id INT,
+    borrow_date DATE,
+    due_date DATE,
+    return_date DATE,
+    status VARCHAR(20) DEFAULT 'borrowed',
+    FOREIGN KEY (book_id) REFERENCES book_table(book_id),
+    FOREIGN KEY (user_id) REFERENCES table_user(user_id)
+)";
+$con->query($create_table_query);
+
 // Get all books
 $books_query = $con->query("SELECT * FROM book_table");
-$books = $books_query->fetch_all(MYSQLI_ASSOC);
+$books = $books_query ? $books_query->fetch_all(MYSQLI_ASSOC) : [];
 
-// Get all borrowing records
+// Get all borrowing records with error handling
 $records_query = $con->query("
     SELECT br.*, b.title, b.author, u.fname, u.lname 
     FROM borrowing_records br
@@ -20,7 +34,13 @@ $records_query = $con->query("
     JOIN table_user u ON br.user_id = u.user_id
     ORDER BY br.borrow_date DESC
 ");
-$records = $records_query->fetch_all(MYSQLI_ASSOC);
+$records = $records_query ? $records_query->fetch_all(MYSQLI_ASSOC) : [];
+
+// Add availability_status column to book_table if it doesn't exist
+$check_column = $con->query("SHOW COLUMNS FROM book_table LIKE 'availability_status'");
+if ($check_column->num_rows === 0) {
+    $con->query("ALTER TABLE book_table ADD COLUMN availability_status VARCHAR(20) DEFAULT 'available'");
+}
 ?>
 
 <!DOCTYPE html>
@@ -29,6 +49,7 @@ $records = $records_query->fetch_all(MYSQLI_ASSOC);
     <meta charset="UTF-8">
     <title>Admin | UST Public Library</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -97,7 +118,7 @@ $records = $records_query->fetch_all(MYSQLI_ASSOC);
                         <div class="card bg-primary text-white">
                             <div class="card-body">
                                 <h5 class="card-title">Total Books</h5>
-                                <p class="card-text display-6"><?= $books_query->num_rows ?></p>
+                                <p class="card-text display-6"><?= $books_query ? $books_query->num_rows : 0 ?></p>
                             </div>
                         </div>
                     </div>
@@ -106,7 +127,10 @@ $records = $records_query->fetch_all(MYSQLI_ASSOC);
                             <div class="card-body">
                                 <h5 class="card-title">Available Books</h5>
                                 <p class="card-text display-6">
-                                    <?= $con->query("SELECT COUNT(*) FROM book_table WHERE availability_status = 'available'")->fetch_row()[0] ?>
+                                    <?php
+                                    $available_query = $con->query("SELECT COUNT(*) FROM book_table WHERE availability_status = 'available'");
+                                    echo $available_query ? $available_query->fetch_row()[0] : 0;
+                                    ?>
                                 </p>
                             </div>
                         </div>
@@ -115,7 +139,7 @@ $records = $records_query->fetch_all(MYSQLI_ASSOC);
                         <div class="card bg-warning text-dark">
                             <div class="card-body">
                                 <h5 class="card-title">Active Borrowings</h5>
-                                <p class="card-text display-6"><?= $records_query->num_rows ?></p>
+                                <p class="card-text display-6"><?= $records_query ? $records_query->num_rows : 0 ?></p>
                             </div>
                         </div>
                     </div>
@@ -124,37 +148,43 @@ $records = $records_query->fetch_all(MYSQLI_ASSOC);
                 <!-- Recent Borrowings Table -->
                 <h3 class="mt-5">Recent Borrowing Records</h3>
                 <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Book</th>
-                                <th>Borrower</th>
-                                <th>Borrow Date</th>
-                                <th>Due Date</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($records as $record): ?>
+                    <?php if (empty($records)): ?>
+                        <div class="alert alert-info">No borrowing records found.</div>
+                    <?php else: ?>
+                        <table class="table table-striped">
+                            <thead>
                                 <tr>
-                                    <td><?= htmlspecialchars($record['title']) ?></td>
-                                    <td><?= htmlspecialchars($record['fname'] . ' ' . $record['lname']) ?></td>
-                                    <td><?= date('M d, Y', strtotime($record['borrow_date'])) ?></td>
-                                    <td><?= date('M d, Y', strtotime($record['due_date'])) ?></td>
-                                    <td><?= ucfirst($record['status']) ?></td>
-                                    <td>
-                                        <?php if ($record['status'] === 'borrowed'): ?>
-                                            <a href="return_book.php?record_id=<?= $record['record_id'] ?>" class="btn btn-sm btn-success">Mark as Returned</a>
-                                        <?php endif; ?>
-                                    </td>
+                                    <th>Book</th>
+                                    <th>Borrower</th>
+                                    <th>Borrow Date</th>
+                                    <th>Due Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
                                 </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($records as $record): ?>
+                                    <tr>
+                                        <td><?= htmlspecialchars($record['title']) ?></td>
+                                        <td><?= htmlspecialchars($record['fname'] . ' ' . $record['lname']) ?></td>
+                                        <td><?= date('M d, Y', strtotime($record['borrow_date'])) ?></td>
+                                        <td><?= date('M d, Y', strtotime($record['due_date'])) ?></td>
+                                        <td><?= ucfirst($record['status']) ?></td>
+                                        <td>
+                                            <?php if ($record['status'] === 'borrowed'): ?>
+                                                <a href="return_book.php?record_id=<?= $record['record_id'] ?>" class="btn btn-sm btn-success">Mark as Returned</a>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
