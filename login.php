@@ -14,20 +14,12 @@ if (isset($_SESSION['user_id'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #e3f2fd;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            padding: 20px 0;
-        }
         .login-container {
             max-width: 400px;
             margin: 0 auto;
             padding: 30px;
-            background: white;
             border-radius: 12px;
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
         }
@@ -38,15 +30,6 @@ if (isset($_SESSION['user_id'])) {
         .logo {
             height: 80px;
             margin-bottom: 15px;
-        }
-        .btn-primary {
-            background-color: #0d47a1;
-            border: none;
-            padding: 12px;
-            font-weight: 500;
-        }
-        .btn-primary:hover {
-            background-color: #1565c0;
         }
         .register-link {
             text-align: center;
@@ -59,9 +42,12 @@ if (isset($_SESSION['user_id'])) {
             box-shadow: 0 0 0 0.25rem rgba(13, 71, 161, 0.25);
         }
         .back-button {
-            position: absolute;
+            position: fixed;
             top: 20px;
             left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
         }
     </style>
 </head>

@@ -6,11 +6,24 @@
     <title>User Registration</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
     <style>
         .back-button {
-            position: absolute;
+            position: fixed;
             top: 20px;
             left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+        }
+        .form-control:focus {
+            border-color: #0d47a1;
+            box-shadow: 0 0 0 0.25rem rgba(13, 71, 161, 0.25);
         }
     </style>
 </head>
@@ -18,10 +31,10 @@
     <a href="homepage.php" class="btn btn-outline-primary back-button">
         <i class="bi bi-arrow-left"></i> Back to Homepage
     </a>
-    <div class="container mt-5">
+    <div class="container" style="margin-top:0;">
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <div class="card">
+                <div class="card" style="padding-top:2rem; padding-bottom:2rem;">
                     <div class="card-header">
                         <h3 class="text-center">User Registration</h3>
                     </div>

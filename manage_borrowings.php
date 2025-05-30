@@ -167,11 +167,11 @@ $records = $records_query ? $records_query->fetch_all(MYSQLI_ASSOC) : [];
                                             </td>
                                             <td>
                                                 <?php if ($record['status'] === 'borrowed'): ?>
-                                                    <form method="post" class="d-inline" onsubmit="return confirm('Mark this book as returned?');">
-                                                        <input type="hidden" name="record_id" value="<?= $record['record_id'] ?>">
-                                                        <input type="hidden" name="book_id" value="<?= $record['book_id'] ?>">
-                                                        <button type="submit" name="return_book" class="btn btn-sm btn-success">Return</button>
-                                                    </form>
+                                                    <a href="return_book.php?record_id=<?= $record['record_id'] ?>"
+                                                       class="btn btn-sm btn-success"
+                                                       onclick="return confirm('Mark this book as returned?');">
+                                                        Return
+                                                    </a>
                                                 <?php endif; ?>
                                             </td>
                                         </tr>

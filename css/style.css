@@ -1,0 +1,41 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(rgba(227, 242, 253, 0.9), rgba(227, 242, 253, 0.9)), url('../images/bg.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+.navbar {
+    background-color: #0d47a1;
+}
+
+.navbar-brand, .nav-link {
+    color: #fff;
+}
+
+.navbar-brand:hover, .nav-link:hover {
+    color: #90caf9;
+}
+
+.card, .container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(5px);
+}
+
+.btn-primary {
+    background-color: #0d47a1;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #1565c0;
+}
+
+footer {
+    background-color: #0d47a1;
+    color: #fff;
+    padding: 15px 0;
+    text-align: center;
+} 

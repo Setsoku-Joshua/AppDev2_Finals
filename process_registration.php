@@ -60,26 +60,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $stmt->close();
 
-    // Insert new user
-    $stmt = $con->prepare("INSERT INTO table_user (fname, lname, mname, role, username, password, email, contact) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    if ($stmt === false) {
-        $_SESSION['error'] = "Database error: " . $con->error;
-        header("Location: registration.php");
-        exit();
+    // --- CSV APPEND LOGIC STARTS HERE ---
+    $csv_file = 'database/table_user.csv';
+    $last_id = 0;
+    if (($handle = fopen($csv_file, 'r')) !== FALSE) {
+        fgetcsv($handle, 1000, ";"); // skip header
+        while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
+            if (isset($data[0]) && is_numeric($data[0])) {
+                $last_id = max($last_id, (int)$data[0]);
+            }
+        }
+        fclose($handle);
     }
+    $new_id = $last_id + 1;
 
-    $stmt->bind_param("ssssssss", $fname, $lname, $mname, $role, $username, $password, $email, $contact);
-    
-    if ($stmt->execute()) {
+    $new_user = [
+        $new_id,
+        $fname,
+        $lname,
+        $mname,
+        $role,
+        $username,
+        $password,
+        $email,
+        $contact
+    ];
+
+    if (($handle = fopen($csv_file, 'a')) !== FALSE) {
+        fputcsv($handle, $new_user, ";");
+        fclose($handle);
         $_SESSION['success'] = "Registration successful! Please login.";
         header("Location: login.php");
         exit();
     } else {
-        $_SESSION['error'] = "Error creating account: " . $stmt->error;
+        $_SESSION['error'] = "Error writing to user database.";
         header("Location: registration.php");
         exit();
     }
-    $stmt->close();
+    // --- END CSV APPEND LOGIC ---
 } else {
     header("Location: registration.php");
     exit();
